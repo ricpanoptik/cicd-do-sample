@@ -43,6 +43,8 @@ jobs:
             cd test
             git clone git@github.com:ricpanoptik/cicd-do-sample.git
             cd cicd-do-sample
+            npm install
+            nohup npm start &
             echo "Deployment complete!"
       
       - name: Install Nginx
