@@ -61,7 +61,6 @@ jobs:
             ls -a
 
             npm install
-            pkill -f "npm run dev"
             nohup npm run dev > output.log 2>&1 &
             echo "Deployment complete!"
       
