@@ -5,7 +5,7 @@ on:
       - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -15,9 +15,21 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 21
-      
+        
       - run: npm install
       - run: npm run lint
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21
       
       - name: Setup SSH connection
         uses: appleboy/ssh-action@v1.0.3
@@ -33,3 +45,22 @@ jobs:
             cd cicd-do-sample
             echo "Deployment complete!"
       
+      - name: Install Nginx
+        run: sudo apt update && sudo apt install -y nginx
+      
+      - name: Configure Nginx
+        run: |
+          echo "server {
+              listen 80;
+              server_name yourdomain.com;
+              location / {
+                  proxy_pass http://localhost:3000;
+                  proxy_http_version 1.1;
+                  proxy_set_header Upgrade \$http_upgrade;
+                  proxy_set_header Connection 'upgrade';
+                  proxy_set_header Host \$host;
+                  proxy_cache_bypass \$http_upgrade;
+              }
+          }" | sudo tee /etc/nginx/sites-available/yourdomain.com
+          sudo ln -s /etc/nginx/sites-available/yourdomain.com /etc/nginx/sites-enabled/
+          sudo service nginx restart
