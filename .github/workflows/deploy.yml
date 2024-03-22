@@ -39,8 +39,17 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }} # User of the server you want to ssh into
 
           script: |
-            mkdir test
+            sudo apt update
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+            export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm install 21
+            nvm use 21
+            mkdir -p test
             cd test
+            if [ -d "cicd-do-sample" ]; then
+              rm -rf cicd-do-sample
+            fi
             git clone git@github.com:ricpanoptik/cicd-do-sample.git
             cd cicd-do-sample
             npm install
