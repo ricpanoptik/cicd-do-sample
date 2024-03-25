@@ -66,18 +66,16 @@ jobs:
             nohup serve -s dist -l 5173 > output.log 2>&1 &
             echo "Deployment complete!"
       
-      - name: Install Nginx
-        run: sudo apt update && sudo apt install -y nginx
-      
       - name: Configure Nginx
         run: |
           echo "server {
               listen 80;
-              server_name yourdomain.com;
+              server_name cicd-testing.com;
               location / {
                 root test/cicd-do-sample/dist;
                 try_files \$uri /index.html;
               }
-          }" | sudo tee /etc/nginx/sites-available/yourdomain.com
-          sudo ln -s /etc/nginx/sites-available/yourdomain.com /etc/nginx/sites-enabled/
+          }" | sudo tee /etc/nginx/sites-available/cicd-testing.com
+          sudo ln -s /etc/nginx/sites-available/cicd-testing.com /etc/nginx/sites-enabled/
+          sudo nginx -t
           sudo service nginx restart
