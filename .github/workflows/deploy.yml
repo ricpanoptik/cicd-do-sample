@@ -64,12 +64,8 @@ jobs:
             npm run build
             cd ../../
             echo "Build complete!"
-      
-      - name: Copy files
-        run: |
-          pwd
-          ls -a
-          sudo rsync -av dist/ /var/www/cicd-testing/html/
+            sudo rsync -av dist/ /var/www/cicd-testing/html/
+            echo "Copy build files complete!"
       
       - name: Configure Nginx
         run: |
