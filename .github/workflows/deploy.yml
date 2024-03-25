@@ -69,7 +69,7 @@ jobs:
         run: |
           pwd
           ls -a
-          sudo rsync -av test/cicd-do-sample/dist/ /var/www/cicd-testing/html/
+          sudo rsync -av dist/ /var/www/cicd-testing/html/
       
       - name: Configure Nginx
         run: |
